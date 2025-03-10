@@ -1,4 +1,4 @@
-name: GitFlow
+name: GitFlow Workflow
  
 on:
   push:
@@ -16,7 +16,6 @@ env:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    environment: dev
  
     steps:
       - name: 🛎️ Checkout del código
@@ -32,21 +31,22 @@ jobs:
         run: docker run --rm $IMAGE_NAME:${{ github.sha }}
  
       - name: 📤 Push de la imagen a GHCR (feature branches)
-        if: startsWith(github.ref, 'refs/heads/feature/')
+        if: contains(github.ref, 'feature/')
         run: |
-          FEATURE_NAME=$(echo ${{ github.ref }} | awk -F'/' '{print $3}')
+          FEATURE_NAME=$(basename ${{ github.ref }})
           docker tag $IMAGE_NAME:${{ github.sha }} $IMAGE_NAME:dev-feature-$FEATURE_NAME
           docker push $IMAGE_NAME:dev-feature-$FEATURE_NAME
  
   deploy-dev:
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/heads/feature/')
-    environment: dev
+    if: contains(github.ref, 'feature/')
  
     steps:
       - name: 🚀 Simulando despliegue en entorno "dev"
-        run: echo "Desplegando en dev con la imagen $IMAGE_NAME:dev-feature-${{ github.ref_name }}"
+        run: |
+          FEATURE_NAME=$(basename ${{ github.ref }})
+          echo "Desplegando en dev con la imagen $IMAGE_NAME:dev-feature-$FEATURE_NAME"
  
       - name: 🧪 Ejecutando pruebas en dev
         run: |
@@ -58,7 +58,6 @@ jobs:
     needs: deploy-dev
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
-    environment: dev
  
     steps:
       - name: 📤 Push de la imagen a GHCR (develop)
@@ -70,7 +69,6 @@ jobs:
     needs: deploy-develop
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    environment: dev
  
     steps:
       - name: 📤 Push de la imagen a GHCR (main)
