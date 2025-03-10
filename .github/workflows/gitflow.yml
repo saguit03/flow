@@ -25,8 +25,7 @@ jobs:
         uses: actions/checkout@v4
  
       - name: 🔧 Login en GitHub Container Registry
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
- 
+        run: docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-string ${{ secrets.GHCR_TOKEN }}
       - name: 🔨 Construcción de la imagen Docker
         run: docker build -t $IMAGE_NAME:${{ github.sha }} .
  
