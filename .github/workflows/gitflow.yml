@@ -24,8 +24,12 @@ jobs:
       - name: 🛎️ Checkout del código
         uses: actions/checkout@v4
  
-      - name: 🔧 Login en GitHub Container Registry
-        run: docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-string ${{ secrets.GHCR_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
       - name: 🔨 Construcción de la imagen Docker
         run: docker build -t $IMAGE_NAME:${{ github.sha }} .
  
