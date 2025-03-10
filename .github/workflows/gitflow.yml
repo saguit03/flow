@@ -13,10 +13,12 @@ on:
  
 env:
   IMAGE_NAME: ghcr.io/${{ secrets.GHCR_USERNAME }}/terraform-sim
+  ENVIRONMENT: dev
  
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    environment: $ENVIRONMENT
  
     steps:
       - name: 🛎️ Checkout del código
@@ -42,6 +44,7 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
     if: contains(github.ref, 'feature/')
+    environment: $ENVIRONMENT
  
     steps:
       - name: 🚀 Simulando despliegue en entorno "dev"
@@ -59,6 +62,7 @@ jobs:
     needs: deploy-dev
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
+    environment: $ENVIRONMENT
  
     steps:
       - name: 📤 Push de la imagen a GHCR (develop)
@@ -70,6 +74,7 @@ jobs:
     needs: deploy-develop
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    environment: $ENVIRONMENT
  
     steps:
       - name: 📤 Push de la imagen a GHCR (main)
