@@ -1,4 +1,4 @@
-name: GitFlow Workflow
+name: GitFlow
  
 on:
   push:
