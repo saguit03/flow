@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
  
 env:
-  IMAGE_NAME: ghcr.io/${{ secrets.GHCR_USERNAME }}/terraform-sim
+  IMAGE_NAME: ghcr.io/${{ github.actor }}/terraform-sim
   ENVIRONMENT: dev
  
 jobs:
