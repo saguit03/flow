@@ -1,0 +1,34 @@
+# https://docs.github.com/es/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services#actualizar-tu-flujo-de-trabajo-de-github-actions
+# Sample workflow to access AWS resources when workflow is tied to branch
+# The workflow Creates static website using aws s3
+name: AWS example workflow
+on:
+  push
+env:
+  BUCKET_NAME : "BUCKET-NAME"
+  AWS_REGION : "AWS-REGION"
+# permission can be added at job level or workflow level
+# Si necesita capturar un token de OIDC para un flujo de trabajo, el permiso se puede establecer en el nivel de flujo de trabajo. 
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+jobs:
+  S3PackageUpload:
+    # # Si solo necesitas recuperar un token de OIDC para un trabajo único, entonces este permiso puede configurarse dentro de dicho job.
+    # permissions:
+    #   id-token: write # This is required for requesting the JWT
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502
+        with:
+          role-to-assume: ROLE-TO-ASSUME
+          role-session-name: samplerolesession
+          aws-region: ${{ env.AWS_REGION }}
+      # Upload a file to AWS s3
+      - name: Copy index.html to s3
+        run: |
+          aws s3 cp ./index.html s3://${{ env.BUCKET_NAME }}/
