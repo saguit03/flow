@@ -1,0 +1,33 @@
+name: Pull Request Created
+
+on:
+    pull_request:
+        types: [opened, reopened]
+
+jobs:
+  terraform:
+    name: 'Validate&Plan'
+    runs-on: ubuntu-latest
+    # environment: TODO
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      run: terraform plan -output=plan
+
+    - name: Almacenar el plan
+      run: echo "TODO! almacenar el .plan en un S3"

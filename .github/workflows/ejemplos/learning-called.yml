@@ -1,0 +1,38 @@
+name: CALLED
+
+on:
+  workflow_call:
+    inputs:
+      env-type:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    environment:  ${{ inputs.env-type }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+          
+      - name: Build and start services with Docker Compose
+        run: |
+          docker compose up -d
+
+      - name: Check containers are running
+        run: |
+          docker ps
+
+      - name: Wait for services to be ready
+        run: |
+          sleep 10
+          docker compose ps
+          
+      - name: Run health check
+        run: |
+          curl -f http://localhost:8080/alive || exit 1
+          curl -f http://localhost:8082/alive || exit 1
+          curl -f http://localhost:8083/alive || exit 1

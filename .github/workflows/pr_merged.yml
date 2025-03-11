@@ -1,0 +1,28 @@
+name: Pull Request Merged
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+
+jobs:
+  load:
+    name: 'Load&Apply'
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    # environment: TODO
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Obtener el plan
+      run: echo "TODO! Obtener el .plan desde un S3"
+
+    - name: Terraform Apply
+      run: terraform apply

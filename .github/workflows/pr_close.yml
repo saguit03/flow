@@ -1,0 +1,27 @@
+name: Pull Request Closed
+
+on:
+    pull_request:
+        types: [closed]
+
+jobs:
+  load:
+    name: 'Remove plan'
+    runs-on: ubuntu-latest
+    # environment: TODO
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Obtener el plan
+      run: echo "TODO! Obtener el .plan desde un S3"
+
+    - name: Terraform Remove
+      run: echo "terraform state rm -dry-run (nombre del plan)"
