@@ -8,3 +8,4 @@
 [rama-origen] git push origin/rama-origen
 [rama-origen] git checkout rama-destino
 [rama-destino] git merge rama-origen
+[rama-destino] git push origin/rama-destino
